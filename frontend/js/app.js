@@ -8,6 +8,8 @@ import { ForgotPassword } from "./components/user/ForgotPassword.js";
 import { ResetPassword } from "./components/user/ResetPassword.js";
 import { ChangePassword } from "./components/user/ChangePassword.js";
 import { Profile } from "./components/user/Profile.js";
+import { OrganizationList } from "./components/organization/OrganizationList.js";
+import { OrganizationForm } from "./components/organization/OrganizationForm.js";
 import { authManager } from "./core/AuthManager.js";
 
 // Create a component that shows either login or profile based on auth state
@@ -29,6 +31,31 @@ class MyPage extends Component {
     }
 }
 
+// Create organization form component
+class CreateOrganization extends Component {
+    render() {
+        return new OrganizationForm({ mode: 'create' }).render();
+    }
+}
+
+// Edit organization component
+class EditOrganization extends Component {
+    constructor(props) {
+        super(props);
+        this.organizationId = props?.organizationId;
+    }
+
+    render() {
+        if (!this.organizationId) {
+            return this.createElement('div', 'error-message', 'Organization ID not provided');
+        }
+        return new OrganizationForm({
+            mode: 'edit',
+            organizationId: this.organizationId
+        }).render();
+    }
+}
+
 // Mount header
 new Header().mount(document.getElementById("header"));
 
@@ -41,6 +68,9 @@ const routes = {
     reset: ResetPassword,
     changepw: ChangePassword,
     profile: Profile,
+    organizations: OrganizationList,
+    'org-create': CreateOrganization,
+    'org-edit': EditOrganization,
 };
 
 // Init router
