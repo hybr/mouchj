@@ -144,7 +144,7 @@ export class OrganizationList extends Component {
 
                 <div class="org-card-actions">
                     ${org.id !== this.currentOrg?.id ? `
-                        <button class="btn-outline btn-sm" onclick="this.switchToOrganization('${org.id}')">
+                        <button class="btn-outline btn-sm" onclick="window.switchToOrganization('${org.id}')">
                             🔄 Switch To
                         </button>
                     ` : ''}

@@ -1,4 +1,5 @@
 import { Component } from "../../core/Component.js";
+import { authManager } from "../../core/AuthManager.js";
 
 export class Profile extends Component {
     constructor(user) {
@@ -39,6 +40,9 @@ export class Profile extends Component {
                         </button>
                         <button class="btn-outline" id="change-password-btn">
                             🔒 Change Password
+                        </button>
+                        <button class="btn-danger" id="logout-btn">
+                            🚪 Sign Out
                         </button>
                     </div>
                 </div>
@@ -144,6 +148,7 @@ export class Profile extends Component {
         const infoDisplay = wrapper.querySelector('#profile-info-display');
         const changePasswordBtn = wrapper.querySelector('#change-password-btn');
         const deleteAccountBtn = wrapper.querySelector('#delete-account-btn');
+        const logoutBtn = wrapper.querySelector('#logout-btn');
 
         // Edit profile toggle
         editBtn.addEventListener('click', () => {
@@ -170,6 +175,11 @@ export class Profile extends Component {
             if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
                 this.handleAccountDeletion();
             }
+        });
+
+        // Logout
+        logoutBtn.addEventListener('click', async () => {
+            await this.handleLogout();
         });
     }
 
@@ -243,6 +253,17 @@ export class Profile extends Component {
         }
     }
 
+    async handleLogout() {
+        try {
+            await authManager.logout();
+            // Redirect to home page
+            window.location.hash = '';
+        } catch (error) {
+            console.error('Logout failed:', error);
+            this.showErrorMessage('Failed to logout. Please try again.');
+        }
+    }
+
     showSuccessMessage(message) {
         // Create and show a temporary success message
         const messageEl = document.createElement('div');
@@ -276,7 +297,7 @@ export class Profile extends Component {
             const last = this.user.lastName?.[0] || '';
             return (first + last).toUpperCase();
         }
-        return this.user.username.slice(0, 2).toUpperCase();
+        return (this.user.username || 'U').slice(0, 2).toUpperCase();
     }
 
     formatDate(dateString) {

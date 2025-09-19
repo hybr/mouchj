@@ -3,7 +3,11 @@
     "allow": [
       "Bash(python:*)",
       "Bash(find:*)",
-      "Bash(echo:*)"
+      "Bash(echo:*)",
+      "Bash(npm install:*)",
+      "Bash(npm start)",
+      "Bash(pkill:*)",
+      "Bash(npx parcel:*)"
     ],
     "deny": [],
     "ask": []

@@ -10,6 +10,9 @@ import { ChangePassword } from "./components/user/ChangePassword.js";
 import { Profile } from "./components/user/Profile.js";
 import { OrganizationList } from "./components/organization/OrganizationList.js";
 import { OrganizationForm } from "./components/organization/OrganizationForm.js";
+import { OrganizationDetails } from "./components/organization/OrganizationDetails.js";
+import { BranchManagement } from "./components/workflow/BranchManagement.js";
+import { BranchWorkflowExample } from "./components/workflow/examples/BranchWorkflowExample.js";
 import { authManager } from "./core/AuthManager.js";
 
 // Create a component that shows either login or profile based on auth state
@@ -71,6 +74,9 @@ const routes = {
     organizations: OrganizationList,
     'org-create': CreateOrganization,
     'org-edit': EditOrganization,
+    'organization-details': OrganizationDetails,
+    'branch-management': BranchManagement,
+    'branch-workflow-example': BranchWorkflowExample,
 };
 
 // Init router

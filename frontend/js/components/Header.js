@@ -40,7 +40,7 @@ export class Header extends Component {
         header.innerHTML = `
             <div class="header-container">
                 <div class="logo">
-                    <h1>OOP Website</h1>
+                    <h1>V</h1>
                 </div>
 
                 <nav class="desktop-nav">
@@ -70,98 +70,78 @@ export class Header extends Component {
 
     renderOrganizationMenu() {
         if (!this.isAuthenticated) {
-            return '';
+            return `<a href="#signin" class="nav-link">Sign In</a>`;
         }
 
         const currentOrgName = this.currentOrganization?.name || 'No Organization';
         const orgInitials = this.currentOrganization
             ? this.getOrgInitials(this.currentOrganization.name)
-            : '?';
+            : `<a href="#signin" class="nav-link">Sign In</a>`;
 
-        return `
-            <div class="org-menu">
-                <button class="org-menu-trigger" id="org-menu-trigger">
-                    <span class="org-avatar">${orgInitials}</span>
-                    <span class="org-name">${currentOrgName}</span>
-                    <span class="dropdown-arrow">▼</span>
-                </button>
-                <div class="org-dropdown" id="org-dropdown">
-                    <div class="dropdown-header">
-                        <h4>Current Organization</h4>
-                    </div>
-                    ${this.currentOrganization ? `
-                        <div class="current-org-item">
-                            <div class="org-avatar large">${orgInitials}</div>
-                            <div class="org-info">
-                                <div class="org-name">${this.currentOrganization.name}</div>
-                                <div class="org-tagline">${this.currentOrganization.tag_line || 'No tagline'}</div>
+        let rStr = '<div class="" id="org-dropdown">';
+        if (this.currentOrganization) {
+            rStr = rStr + `<div class="current-org-container">
+                            <a href="#organizations" class="current-org-item clickable">
+                                <div class="org-avatar large">${orgInitials}</div>
+                                <div class="org-info">
+                                    <div class="org-name">${this.currentOrganization.name}</div>
+                                    <div class="org-tagline">${this.currentOrganization.tag_line || 'No tagline'}</div>
+                                </div>
+                            </a>
+                            <div class="org-actions">
+                                <button class="org-action-btn" id="viewOrgDetailsBtn" title="View Details">
+                                    <i class="fas fa-info-circle"></i>
+                                </button>
+                                <button class="org-action-btn" id="orgMenuBtn" title="More Options">
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
                             </div>
-                            <span class="current-badge">Current</span>
                         </div>
-                    ` : `
-                        <div class="no-current-org">
+                        <div class="org-dropdown-menu" id="orgDropdownMenu">
+                            <a href="#organization-details" class="dropdown-item">
+                                <i class="fas fa-info-circle"></i>
+                                View Details
+                            </a>
+                            <a href="#organizations" class="dropdown-item">
+                                <i class="fas fa-cog"></i>
+                                Manage Organizations
+                            </a>
+                            <a href="#branch-management" class="dropdown-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Manage Branches
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a href="#organization-settings" class="dropdown-item">
+                                <i class="fas fa-sliders-h"></i>
+                                Organization Settings
+                            </a>
+                        </div>`;
+        } else {
+            rStr = rStr + `<a href="#organizations" class="no-current-org clickable">
                             <div class="org-avatar large">?</div>
                             <div class="org-info">
                                 <div class="org-name">No Organization Selected</div>
-                                <div class="org-tagline">Create or select an organization</div>
+                                <div class="org-tagline">Manage organizations</div>
                             </div>
-                        </div>
-                    `}
-                    <div class="dropdown-divider"></div>
-                    ${this.organizations.length > 0 ? `
-                        <div class="org-list">
-                            <h5>Switch Organization:</h5>
-                            ${this.organizations.slice(0, 3).map(org => `
-                                <button class="org-switch-item ${org.id === this.currentOrganization?.id ? 'current' : ''}"
-                                        onclick="this.switchOrganization('${org.id}')"
-                                        ${org.id === this.currentOrganization?.id ? 'disabled' : ''}>
-                                    <div class="org-avatar small">${this.getOrgInitials(org.name)}</div>
-                                    <div class="org-switch-info">
-                                        <span class="org-switch-name">${org.name}</span>
-                                        ${org.is_active ? '' : '<span class="inactive-label">Inactive</span>'}
-                                    </div>
-                                    ${org.id === this.currentOrganization?.id ? '<span class="check-mark">✓</span>' : ''}
-                                </button>
-                            `).join('')}
-                            ${this.organizations.length > 3 ? `<div class="more-orgs">+${this.organizations.length - 3} more</div>` : ''}
-                        </div>
-                        <div class="dropdown-divider"></div>
-                    ` : ''}
-                    <a href="#organizations" class="dropdown-item">🏢 Manage Organizations</a>
-                    <a href="#org-create" class="dropdown-item">➕ Create Organization</a>
-                </div>
-            </div>
-        `;
+                        </a>`;
+        }
+        return rStr + `</div>`;
     }
 
     renderNavLink() {
         if (this.isAuthenticated) {
             const displayName = this.currentUser?.firstName || this.currentUser?.username || 'User';
             return `
-                <div class="user-menu">
-                    <button class="user-menu-trigger" id="user-menu-trigger">
-                        <span class="user-avatar">${this.getUserInitials()}</span>
-                        <span class="user-name">My</span>
-                        <span class="dropdown-arrow">▼</span>
-                    </button>
-                    <div class="user-dropdown" id="user-dropdown">
-                        <div class="dropdown-header">
+                        <a href="#profile" class="dropdown-header profile-link">
                             <div class="dropdown-avatar">${this.getUserInitials()}</div>
                             <div class="dropdown-info">
                                 <div class="dropdown-name">${displayName}</div>
                                 <div class="dropdown-email">${this.currentUser?.email || ''}</div>
                             </div>
-                        </div>
-                        <div class="dropdown-divider"></div>
-                        <a href="#profile" class="dropdown-item">👤 My Profile</a>
-                        <a href="#changepw" class="dropdown-item">🔒 Change Password</a>
-                        <div class="dropdown-divider"></div>
-                        <button class="dropdown-item logout-btn" id="logout-btn">🚪 Sign Out</button>
-                    </div>
-                </div>
+                        </a>
             `;
         } else {
-            return `<a href="#my" class="nav-link">My</a>`;
+            return `<a href="#signin" class="nav-link">Sign In</a>`;
         }
     }
 
@@ -180,17 +160,13 @@ export class Header extends Component {
                 <div class="mobile-org-header">
                     <h4>Current Organization</h4>
                 </div>
-                <div class="mobile-current-org">
+                <a href="#organizations" class="mobile-current-org">
                     <div class="mobile-org-avatar">${orgInitials}</div>
                     <div class="mobile-org-details">
                         <div class="mobile-org-name">${currentOrgName}</div>
-                        <div class="mobile-org-tagline">${this.currentOrganization?.tag_line || 'No tagline'}</div>
+                        <div class="mobile-org-tagline">${this.currentOrganization?.tag_line || 'Manage organizations'}</div>
                     </div>
-                </div>
-                <div class="mobile-org-actions">
-                    <a href="#organizations" class="mobile-org-btn">🏢 Manage Organizations</a>
-                    <a href="#org-create" class="mobile-org-btn">➕ Create New</a>
-                </div>
+                </a>
             </div>
             <div class="mobile-nav-divider"></div>
         `;
@@ -200,16 +176,14 @@ export class Header extends Component {
         if (this.isAuthenticated) {
             const displayName = this.currentUser?.firstName || this.currentUser?.username || 'User';
             return `
-                <div class="mobile-user-info">
+                <a href="#profile" class="mobile-user-info">
                     <div class="mobile-avatar">${this.getUserInitials()}</div>
                     <div class="mobile-user-details">
                         <div class="mobile-name">${displayName}</div>
                         <div class="mobile-email">${this.currentUser?.email || ''}</div>
                     </div>
-                </div>
+                </a>
                 <div class="mobile-nav-divider"></div>
-                <a href="#profile">👤 My Profile</a>
-                <a href="#changepw">🔒 Change Password</a>
                 <div class="mobile-nav-divider"></div>
                 <button class="mobile-logout-btn" id="mobile-logout-btn">🚪 Sign Out</button>
             `;
@@ -294,18 +268,29 @@ export class Header extends Component {
     }
 
     addUserMenuListeners() {
-        // Desktop organization menu
-        const orgMenuTrigger = document.getElementById('org-menu-trigger');
-        const orgDropdown = document.getElementById('org-dropdown');
+        // Organization details button
+        const viewOrgDetailsBtn = document.getElementById('viewOrgDetailsBtn');
+        if (viewOrgDetailsBtn) {
+            viewOrgDetailsBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                window.location.hash = '#organization-details';
+            });
+        }
 
-        if (orgMenuTrigger && orgDropdown) {
-            orgMenuTrigger.addEventListener('click', (e) => {
+        // Organization menu button
+        const orgMenuBtn = document.getElementById('orgMenuBtn');
+        const orgDropdownMenu = document.getElementById('orgDropdownMenu');
+
+        if (orgMenuBtn && orgDropdownMenu) {
+            orgMenuBtn.addEventListener('click', (e) => {
+                e.preventDefault();
                 e.stopPropagation();
                 // Close user dropdown if open
                 const userDropdown = document.getElementById('user-dropdown');
                 if (userDropdown) userDropdown.classList.remove('show');
 
-                orgDropdown.classList.toggle('show');
+                orgDropdownMenu.classList.toggle('show');
             });
         }
 
@@ -331,9 +316,9 @@ export class Header extends Component {
                 const userDropdown = document.getElementById('user-dropdown');
                 if (userDropdown) userDropdown.classList.remove('show');
             }
-            if (!e.target.closest('.org-menu')) {
-                const orgDropdown = document.getElementById('org-dropdown');
-                if (orgDropdown) orgDropdown.classList.remove('show');
+            if (!e.target.closest('.org-dropdown')) {
+                const orgDropdownMenu = document.getElementById('orgDropdownMenu');
+                if (orgDropdownMenu) orgDropdownMenu.classList.remove('show');
             }
         });
 
@@ -342,7 +327,8 @@ export class Header extends Component {
             try {
                 organizationService.setCurrentOrganization(orgId);
                 // Close dropdown
-                if (orgDropdown) orgDropdown.classList.remove('show');
+                const orgDropdownMenu = document.getElementById('orgDropdownMenu');
+                if (orgDropdownMenu) orgDropdownMenu.classList.remove('show');
             } catch (error) {
                 console.error('Failed to switch organization:', error);
             }
@@ -383,6 +369,12 @@ export class Header extends Component {
             const userDropdown = document.getElementById('user-dropdown');
             if (userDropdown) {
                 userDropdown.classList.remove('show');
+            }
+
+            // Close org dropdown
+            const orgDropdownMenu = document.getElementById('orgDropdownMenu');
+            if (orgDropdownMenu) {
+                orgDropdownMenu.classList.remove('show');
             }
 
         } catch (error) {
